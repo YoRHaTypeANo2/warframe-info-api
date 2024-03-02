@@ -40,16 +40,13 @@ const warframeMarketAuctions = {
         if(info.word){
             return isRiven ? this.rivenFormatStr(info) : this.weaponFormatStr(info)
         } else {
-            return `未找到与${name}相关的${isRiven ? '紫卡，请尝试输入英文' : '玄骸武器，请尝试简化输入内容'}`;
+            return `没找到${name}, 你在搜些什么勾吧`;
         }
     },
     rivenFormatStr: function(info){
-        let en_name = info.word.en ?? info.word.zh
-        let res = `从Warframe.Market查询到'${info.word.zh ?? info.word.en} [${info.word.url_name}]'的紫卡信息(截取价格最低前5条):\n\n`;
+        let res = `从Warframe.Market查询到 ${info.word.zh ?? info.word.en} 的紫卡信息\n(截取价格最低前5条):\n`;
         info.seller.forEach(((value, index) => {
-            res+= `${en_name} ${value.item.name} `
-            res+= value.is_direct_sell ? `(一口价:${value.starting_price}p)` : `(底价:${value.starting_price}->现价:${value.buyout_price}p)`
-            res+= ` ${age(value.created)}\n`
+            res+= value.is_direct_sell ? `价格：${value.starting_price}p \n` : `价格：(这啥b拍卖的) \n`
             res+= value.item.re_rolls+'洗 '+value.item.mod_rank+'级 段位'+value.item.mastery_level+'\n';
             value.item.attributes.forEach(attr => {
                 let attrDict = wfaLibs.libs.riven_attributes.get(attr.url_name)
@@ -58,9 +55,9 @@ const warframeMarketAuctions = {
                     : ''
                 res += `\t ${attrDict.rm_name??attrDict.zh??attr.url_name}:${attr.value}${unit}\n`
             })
-            res+= `id:${value.owner.ingame_name} (${value.platform})[${value.owner.status}]\n\n`
+            res+= `卖家ID:${value.owner.ingame_name} [${value.owner.status}]\n\n`
         }));
-        info.words.length >0 && (res += `你可能还想查：${info.words.map(v=>v.key).join('\n')}`);
+        // info.words.length >0 && (res += `你可能还想查：${info.words.map(v=>v.key).join('\n')}`);
         return res;
     },
     weaponFormatStr: function(info){
@@ -71,7 +68,7 @@ const warframeMarketAuctions = {
             res+= `${age(value.created)}\n`
             res+= `id:${value.owner.ingame_name} (${value.platform})[${value.owner.status}]\n\n`
         }));
-        info.words.length >0 && (res += `你可能还想查：${info.words.map(v=>v.key).join('\n')}`);
+        // info.words.length >0 && (res += `你可能还想查：${info.words.map(v=>v.key).join('\n')}`);
         return res;
     }
 }
